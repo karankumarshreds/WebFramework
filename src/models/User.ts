@@ -26,7 +26,13 @@ export class User {
   }
 
   // event handlers
+  // we will use this method to save the event handlers
   on(eventName: string, cb: Callback): void {
-    // we need a way to store all the events
+    // handlers could be Callback[] or undefined (in case event
+    // name does not exist initially as the key in the object)
+    // so incase it does not exist, use an empty array
+    const handlers = this.events[eventName] || [];
+    handlers.push(cb);
+    this.events[eventName] = handlers;
   }
 }
