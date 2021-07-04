@@ -1,28 +1,28 @@
-type Callback = () => void; // type alias
+type Callback = () => void;
+
+interface Event {
+  [eventName: string]: Callback[];
+}
 
 export class Eventing {
-  // stores all the different events that get registered
-  private events: { [key: string]: Callback[] } = {};
+  private events: Event = {};
 
-  // event handlers
-  // we will use this method to save the event handlers
-  on(eventName: string, cb: Callback): void {
-    // handlers could be Callback[] or undefined (in case event
-    // name does not exist initially as the key in the object)
-    // so incase it does not exist, use an empty array
+  // add events and their handlers
+  on(eventName: string, eventHandler: Callback) {
     const handlers = this.events[eventName] || [];
-    handlers.push(cb);
+    handlers.push(eventHandler);
     this.events[eventName] = handlers;
   }
 
-  trigger(eventName: string): void {
+  // trigger events
+  trigger(eventName: string) {
     const handlers = this.events[eventName];
     if (!handlers || !handlers.length) {
       return;
+    } else {
+      handlers.forEach((cb) => {
+        cb();
+      });
     }
-    // otherwise call each callback
-    handlers.forEach((cb) => {
-      cb();
-    });
   }
 }
